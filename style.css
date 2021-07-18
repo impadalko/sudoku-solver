@@ -19,7 +19,7 @@ td {
 }
 
 td.invalid {
-  border: solid 2px red !important;
+  color: red;
 }
 
 td.border-top {
@@ -36,4 +36,8 @@ td.border-left {
 
 td.border-right {
   border-right: solid 2px black;
+}
+
+button {
+  margin: 10px;
 }
