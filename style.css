@@ -38,6 +38,11 @@ td.border-right {
   border-right: solid 2px black;
 }
 
+span {
+  margin: auto;
+  font-size: larger;
+}
+
 button {
   margin: 10px;
 }

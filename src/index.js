@@ -25,17 +25,31 @@ solveButton.addEventListener('click', () => {
     }
   }
   solveButton.setAttribute('disabled', true)
-  // TODO: Check if valid before attempting to solve
-  // TODO: Display to the user if a solution was found
-  solve(grid)
+  const status = document.getElementById(`status`)
+  if (!isValidGrid(grid)) {
+    status.innerHTML = 'Cannot solve'
+    return
+  }
+  status.innerHTML = 'Solving...'
+  solve(grid).then((r) => {
+    if (r) status.innerHTML = 'Solved'
+    else status.innerHTML = 'Could not solve'
+  })
 })
+
+const isValidGrid = (grid) => {
+  for (let i = 0; i < 9; i++)
+    for (let j = 0; j < 9; j++)
+      if (grid[i][j] !== 0 && !isValidCell(grid, i, j, grid[i][j])) return false
+  return true
+}
 
 const solve = async (grid) => {
   for (let i = 0; i < 9; i++)
     for (let j = 0; j < 9; j++)
       if (grid[i][j] === 0) {
         for (let k = 1; k <= 9; k++) {
-          if (isValid(grid, i, j, k)) {
+          if (isValidCell(grid, i, j, k)) {
             const cell = document.getElementById(`cell-${i}-${j}`)
             // Attempt to solve by setting cell[i][j] to k and recursing
             grid[i][j] = k
@@ -53,14 +67,18 @@ const solve = async (grid) => {
   return true
 }
 
-const isValid = (grid, row, col, candidate) => {
-  for (let i = 0; i < 9; i++) if (grid[i][col] !== 0 && grid[i][col] === candidate) return false
-  for (let i = 0; i < 9; i++) if (grid[row][i] !== 0 && grid[row][i] === candidate) return false
+const isValidCell = (grid, row, col, candidate) => {
+  for (let i = 0; i < 9; i++)
+    if (i !== row && grid[i][col] !== 0 && grid[i][col] === candidate) return false
+  for (let i = 0; i < 9; i++)
+    if (i !== col && grid[row][i] !== 0 && grid[row][i] === candidate) return false
   const squareRow = Math.floor(row / 3)
   const squareCol = Math.floor(col / 3)
   for (let i = 0; i < 9; i++) {
-    const cell = grid[3 * squareRow + Math.floor(i / 3)][3 * squareCol + (i % 3)]
-    if (cell !== 0 && cell === candidate) return false
+    const l = 3 * squareRow + Math.floor(i / 3)
+    const k = 3 * squareCol + (i % 3)
+    if (l === row && k === col) continue
+    if (grid[l][k] !== 0 && grid[l][k] === candidate) return false
   }
   return true
 }
