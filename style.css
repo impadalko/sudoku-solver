@@ -1,3 +1,7 @@
+:root {
+  --grid-size: 48px;
+}
+
 body {
   height: 100vh;
   display: flex;
@@ -12,8 +16,8 @@ table {
 }
 
 td {
-  width: 50px;
-  height: 50px;
+  width: var(--grid-size);
+  height: var(--grid-size);
   border: solid 1px black;
   text-align: center;
 }
