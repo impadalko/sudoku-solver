@@ -97,17 +97,14 @@ const solve = async (grid) => {
 }
 
 const isValidCell = (grid, row, col, candidate) => {
-  for (let i = 0; i < gridSize; i++)
-    if (i !== row && grid[i][col] !== 0 && grid[i][col] === candidate) return false
-  for (let i = 0; i < gridSize; i++)
-    if (i !== col && grid[row][i] !== 0 && grid[row][i] === candidate) return false
+  for (let i = 0; i < gridSize; i++) if (i !== row && grid[i][col] === candidate) return false
+  for (let i = 0; i < gridSize; i++) if (i !== col && grid[row][i] === candidate) return false
   const squareRow = Math.floor(row / squareSize)
   const squareCol = Math.floor(col / squareSize)
   for (let i = 0; i < gridSize; i++) {
     const l = squareSize * squareRow + Math.floor(i / squareSize)
     const k = squareSize * squareCol + (i % squareSize)
-    if (l === row && k === col) continue
-    if (grid[l][k] !== 0 && grid[l][k] === candidate) return false
+    if (!(l === row && k === col) && grid[l][k] === candidate) return false
   }
   return true
 }
