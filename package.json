@@ -6,7 +6,7 @@
   "author": "Ivan Padalko <dev@impadalko.com>",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url ./",
     "lint": "eslint --max-warnings 0 src/",
     "prettier": "prettier src/** README.md",
     "start": "parcel src/index.html"
