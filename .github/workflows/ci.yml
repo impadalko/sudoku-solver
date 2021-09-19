@@ -38,6 +38,8 @@ jobs:
         run: git checkout -b deploy
       - name: Build website
         run: yarn build
+      - name: Clean hosting branch
+        run: ls | grep -v -E "dist" | xargs rm -rf
       - name: Copy built files
         run: cp dist/* .
       - name: Commit and push
