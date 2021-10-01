@@ -59,11 +59,11 @@ export class Grid {
     for (let i = 0; i < this.gridSize; i++)
       if (i !== col && this.data[row][i] === candidate) return false
 
-    const squareRow = Math.floor(row / this.squareSize)
-    const squareCol = Math.floor(col / this.squareSize)
+    const squareRow = this.squareSize * Math.floor(row / this.squareSize)
+    const squareCol = this.squareSize * Math.floor(col / this.squareSize)
     for (let i = 0; i < this.gridSize; i++) {
-      const l = this.squareSize * squareRow + Math.floor(i / this.squareSize)
-      const k = this.squareSize * squareCol + (i % this.squareSize)
+      const l = squareRow + Math.floor(i / this.squareSize)
+      const k = squareCol + (i % this.squareSize)
       if (!(l === row && k === col) && this.data[l][k] === candidate) return false
     }
     return true
