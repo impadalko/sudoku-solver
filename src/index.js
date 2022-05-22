@@ -5,7 +5,9 @@ let grid = new Grid(9)
 for (const el of document.querySelectorAll('input[type=radio][name=size]')) {
   el.addEventListener('change', (e) => {
     const gridSize = parseInt(e.currentTarget.value, 10)
-    document.querySelector(':root').style.setProperty('--grid-size', `${432 / gridSize}px`)
+    const rootStyle = document.querySelector(':root').style
+    rootStyle.setProperty('--grid-size', `${432 / gridSize}px`)
+    rootStyle.setProperty('--font-size', `${Math.max(144 / gridSize, 16)}px`)
     grid = new Grid(gridSize)
   })
 }

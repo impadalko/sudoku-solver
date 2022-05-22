@@ -1,5 +1,6 @@
 :root {
   --grid-size: 48px;
+  --font-size: 16px;
 }
 
 body {
@@ -20,6 +21,7 @@ td {
   height: var(--grid-size);
   border: solid 1px black;
   text-align: center;
+  font-size: var(--font-size);
 }
 
 td.invalid {
