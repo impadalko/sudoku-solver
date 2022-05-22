@@ -1,5 +1,6 @@
 import { Grid } from './grid.js'
 import backtrack from './backtrack.js'
+import dancingLinks from './dancingLinks.js'
 
 let grid = new Grid(9)
 let solve
@@ -20,7 +21,7 @@ solveButton.addEventListener('click', (e) => {
   grid.lock()
   e.currentTarget.disabled = true
   document.querySelectorAll('input[type=radio]').forEach((e) => (e.disabled = true))
-  solve = algorithmMap[document.querySelector('input[type=radio][name=algorithm][checked]').value]
+  solve = algorithmMap[document.querySelector('input[type=radio][name=algorithm]:checked').value]
   const status = document.getElementById(`status`)
   if (!grid.isValid()) {
     status.innerHTML = 'Cannot solve'
@@ -34,5 +35,6 @@ solveButton.addEventListener('click', (e) => {
 })
 
 const algorithmMap = {
-  backtrack: backtrack,
+  backtrack,
+  dancingLinks,
 }
