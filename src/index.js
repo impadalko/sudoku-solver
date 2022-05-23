@@ -1,8 +1,10 @@
 import { Grid } from './grid.js'
+import backtrack from './backtrack.js'
 
 let grid = new Grid(9)
+let solve
 
-for (const el of document.querySelectorAll('input[type=radio][name=size]')) {
+for (const el of document.getElementsByName('size')) {
   el.addEventListener('change', (e) => {
     const gridSize = parseInt(e.currentTarget.value, 10)
     const rootStyle = document.querySelector(':root').style
@@ -12,11 +14,13 @@ for (const el of document.querySelectorAll('input[type=radio][name=size]')) {
   })
 }
 
-// TODO: Add algorithm selector and implement dancing links
+// TODO: Add dancing links
 const solveButton = document.getElementById('solve-button')
 solveButton.addEventListener('click', (e) => {
   grid.lock()
-  e.currentTarget.setAttribute('disabled', true)
+  e.currentTarget.disabled = true
+  document.querySelectorAll('input[type=radio]').forEach((e) => (e.disabled = true))
+  solve = algorithmMap[document.querySelector('input[type=radio][name=algorithm][checked]').value]
   const status = document.getElementById(`status`)
   if (!grid.isValid()) {
     status.innerHTML = 'Cannot solve'
@@ -25,26 +29,10 @@ solveButton.addEventListener('click', (e) => {
   status.innerHTML = 'Solving...'
   solve(grid).then((r) => {
     if (r) status.innerHTML = 'Solved'
-    else status.innerHTML = 'Could not solve'
+    else status.innerHTML = 'Cannot solve'
   })
 })
 
-const solve = async (grid) => {
-  for (let i = 0; i < grid.gridSize; i++)
-    for (let j = 0; j < grid.gridSize; j++)
-      if (grid.data[i][j] === 0) {
-        for (let k = 1; k <= grid.gridSize; k++) {
-          if (grid.isValidCell(i, j, k)) {
-            // Attempt to solve by setting cell[i][j] to k and recursing
-            grid.updateCell(i, j, k)
-            // Add sleep to better show the backtracking to the user
-            await new Promise((r) => setTimeout(r, 50))
-            if (await solve(grid)) return true
-            // Rollback if cannot solve with this value
-            grid.updateCell(i, j, 0)
-          }
-        }
-        return false
-      }
-  return true
+const algorithmMap = {
+  backtrack: backtrack,
 }
