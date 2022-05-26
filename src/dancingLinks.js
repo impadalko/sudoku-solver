@@ -13,6 +13,26 @@ class Cell {
     this.right = cell
     cell.left = this
   }
+
+  removeHorizontally() {
+    this.left.right = this.right
+    this.right.left = this.left
+  }
+
+  returnHorizontally() {
+    this.left.right = this
+    this.right.left = this
+  }
+
+  removeVertically() {
+    this.up.down = this.down
+    this.down.up = this.up
+  }
+
+  returnVertically() {
+    this.up.down = this
+    this.down.up = this
+  }
 }
 
 class ColumnHeader extends Cell {
@@ -29,6 +49,25 @@ class ColumnHeader extends Cell {
     cell.up.down = cell
     this.up = cell
     cell.header = this
+  }
+
+  cover() {
+    this.removeHorizontally()
+
+    for (let p = this.down; p != this; p = p.down)
+      for (let q = p.right; q != p; q = q.right) {
+        q.removeVertically()
+        q.header.size--
+      }
+  }
+
+  uncover() {
+    for (let p = this.up; p != this; p = p.up)
+      for (let q = p.left; q != p; q = q.left) {
+        q.header.size++
+        q.returnVertically()
+      }
+    this.returnHorizontally()
   }
 }
 
