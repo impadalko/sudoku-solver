@@ -56,8 +56,8 @@ class Column extends BaseCell {
   cover() {
     this.removeHorizontally()
 
-    for (let p = this.down; p != this; p = p.down)
-      for (let q = p.right; q != p; q = q.right) {
+    for (let p = this.down; p !== this; p = p.down)
+      for (let q = p.right; q !== p; q = q.right) {
         q.removeVertically()
         q.header.size--
       }
@@ -66,8 +66,8 @@ class Column extends BaseCell {
   uncover() {
     this.returnHorizontally()
 
-    for (let p = this.up; p != this; p = p.up)
-      for (let q = p.left; q != p; q = q.left) {
+    for (let p = this.up; p !== this; p = p.up)
+      for (let q = p.left; q !== p; q = q.left) {
         q.returnVertically()
         q.header.size++
       }
@@ -122,7 +122,11 @@ class DancingLinks {
   squareConstraint(row, col, value) {
     const squareRow = this.squareSize * Math.floor(row / this.squareSize)
     const squareCol = this.squareSize * Math.floor(col / this.squareSize)
-    return 3 * Math.pow(this.gridSize, 2) + squareRow * this.squareSize + squareCol + value
+    return (
+      3 * Math.pow(this.gridSize, 2) +
+      (squareRow * this.squareSize + squareCol) * this.squareSize +
+      value
+    )
   }
 }
 
