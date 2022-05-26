@@ -1,6 +1,6 @@
 let id = 0
 
-class Cell {
+class BaseCell {
   constructor() {
     this.id = id++
     this.right = this
@@ -13,17 +13,9 @@ class Cell {
     this.right = cell
     cell.left = this
   }
+}
 
-  removeHorizontally() {
-    this.left.right = this.right
-    this.right.left = this.left
-  }
-
-  returnHorizontally() {
-    this.left.right = this
-    this.right.left = this
-  }
-
+class Cell extends BaseCell {
   removeVertically() {
     this.up.down = this.down
     this.down.up = this.up
@@ -35,7 +27,7 @@ class Cell {
   }
 }
 
-class ColumnHeader extends Cell {
+class Column extends BaseCell {
   constructor() {
     super()
     this.size = 0
@@ -51,6 +43,16 @@ class ColumnHeader extends Cell {
     cell.header = this
   }
 
+  removeHorizontally() {
+    this.left.right = this.right
+    this.right.left = this.left
+  }
+
+  returnHorizontally() {
+    this.left.right = this
+    this.right.left = this
+  }
+
   cover() {
     this.removeHorizontally()
 
@@ -62,12 +64,13 @@ class ColumnHeader extends Cell {
   }
 
   uncover() {
+    this.returnHorizontally()
+
     for (let p = this.up; p != this; p = p.up)
       for (let q = p.left; q != p; q = q.left) {
-        q.header.size++
         q.returnVertically()
+        q.header.size++
       }
-    this.returnHorizontally()
   }
 }
 
@@ -77,7 +80,7 @@ class DancingLinks {
     this.squareSize = grid.squareSize
 
     const columnCount = 4 * Math.pow(this.gridSize, 2)
-    this.columns = Array.from(Array(columnCount + 1), () => new ColumnHeader())
+    this.columns = Array.from(Array(columnCount + 1), () => new Column())
     this.header = this.columns[0]
     for (let i = 0; i <= columnCount; i++) {
       const j = (i + 1) % this.columns.length
