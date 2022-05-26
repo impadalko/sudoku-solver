@@ -1,5 +1,13 @@
 let id = 0
 
+class Candidate {
+  constructor(row, col, value) {
+    this.row = row
+    this.col = col
+    this.value = value
+  }
+}
+
 class BaseCell {
   constructor() {
     this.id = id++
@@ -16,6 +24,11 @@ class BaseCell {
 }
 
 class Cell extends BaseCell {
+  constructor(candidate) {
+    super()
+    this.candidate = candidate
+  }
+
   removeVertically() {
     this.up.down = this.down
     this.down.up = this.up
@@ -74,8 +87,9 @@ class Column extends BaseCell {
   }
 }
 
-class DancingLinks {
+class Board {
   constructor(grid) {
+    this.grid = grid
     this.gridSize = grid.gridSize
     this.squareSize = grid.squareSize
 
@@ -90,10 +104,11 @@ class DancingLinks {
     for (let i = 0; i < this.gridSize; i++)
       for (let j = 0; j < this.gridSize; j++)
         for (let value = 1; value <= this.gridSize; value++) {
-          const posCell = new Cell()
-          const rowCell = new Cell()
-          const colCell = new Cell()
-          const squareCell = new Cell()
+          const candidate = new Candidate(i, j, value)
+          const posCell = new Cell(candidate)
+          const rowCell = new Cell(candidate)
+          const colCell = new Cell(candidate)
+          const squareCell = new Cell(candidate)
 
           posCell.addRight(rowCell)
           rowCell.addRight(colCell)
@@ -105,6 +120,20 @@ class DancingLinks {
           this.columns[this.columnConstraint(j, value)].addUp(colCell)
           this.columns[this.squareConstraint(i, j, value)].addUp(squareCell)
         }
+
+    // Remove the constraints that are already met by the user input
+    // We could do this when first building the board, however this would make the logic harder to
+    // understand without real improvements to code performance
+    for (let i = 0; i < this.gridSize; i++)
+      for (let j = 0; j < this.gridSize; j++) {
+        const value = grid.data[i][j]
+        if (value !== 0) {
+          this.columns[this.positionConstraint(i, j)].cover()
+          this.columns[this.rowConstraint(i, value)].cover()
+          this.columns[this.columnConstraint(j, value)].cover()
+          this.columns[this.squareConstraint(i, j, value)].cover()
+        }
+      }
   }
 
   positionConstraint(row, col) {
@@ -120,19 +149,48 @@ class DancingLinks {
   }
 
   squareConstraint(row, col, value) {
-    const squareRow = this.squareSize * Math.floor(row / this.squareSize)
-    const squareCol = this.squareSize * Math.floor(col / this.squareSize)
-    return (
-      3 * Math.pow(this.gridSize, 2) +
-      (squareRow * this.squareSize + squareCol) * this.squareSize +
-      value
-    )
+    const sqRow = this.squareSize * Math.floor(row / this.squareSize)
+    const sqCol = this.squareSize * Math.floor(col / this.squareSize)
+    const sqSize = this.squareSize
+    return 3 * Math.pow(this.gridSize, 2) + (sqRow * sqSize + sqCol) * sqSize + value
+  }
+
+  async solve() {
+    const column = this.selectColumn()
+    if (column === null) return true
+    column.cover()
+    for (let p = column.down; p !== column; p = p.down) {
+      this.grid.updateCell(p.candidate.row, p.candidate.col, p.candidate.value)
+      for (let q = p.right; q !== p; q = q.right) q.header.cover()
+      // Add sleep to better show the attempt to the user
+      await new Promise((r) => setTimeout(r, 50))
+      if (await this.solve()) return true
+      for (let q = p.left; q !== p; q = q.left) q.header.uncover()
+      this.grid.updateCell(p.candidate.row, p.candidate.col, 0)
+    }
+    column.uncover()
+
+    return false
+  }
+
+  // Select the column with the least amount of possible values.
+  // This is not needed by is used to make the recursion faster
+  selectColumn() {
+    let minSize = Infinity
+    let column = null
+    for (let p = this.header.right; p !== this.header; p = p.right) {
+      if (p.size < minSize) {
+        column = p
+        minSize = p.size
+      }
+    }
+    return column
   }
 }
 
-const solve = async (grid) => {
-  new DancingLinks(grid)
-  return false
+const dancingLinks = async (grid) => {
+  const board = new Board(grid)
+  return board.solve()
 }
 
-export default solve
+export default dancingLinks

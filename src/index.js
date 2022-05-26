@@ -15,7 +15,6 @@ for (const el of document.getElementsByName('size')) {
   })
 }
 
-// TODO: Add dancing links
 const solveButton = document.getElementById('solve-button')
 solveButton.addEventListener('click', (e) => {
   grid.lock()
