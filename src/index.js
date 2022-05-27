@@ -2,19 +2,24 @@ import { Grid } from './grid.js'
 import backtrack from './backtrack.js'
 import dancingLinks from './dancingLinks.js'
 
-let grid = new Grid(9)
-let solve
+let grid
+
+const updateGrid = (el) => {
+  const gridSize = parseInt(el.value, 10)
+  const rootStyle = document.querySelector(':root').style
+  rootStyle.setProperty('--grid-size', `${432 / gridSize}px`)
+  rootStyle.setProperty('--font-size', `${Math.max(144 / gridSize, 16)}px`)
+  grid = new Grid(gridSize)
+}
 
 for (const el of document.getElementsByName('size')) {
+  if (el.checked) updateGrid(el)
   el.addEventListener('change', (e) => {
-    const gridSize = parseInt(e.currentTarget.value, 10)
-    const rootStyle = document.querySelector(':root').style
-    rootStyle.setProperty('--grid-size', `${432 / gridSize}px`)
-    rootStyle.setProperty('--font-size', `${Math.max(144 / gridSize, 16)}px`)
-    grid = new Grid(gridSize)
+    updateGrid(e.currentTarget)
   })
 }
 
+let solve
 const solveButton = document.getElementById('solve-button')
 solveButton.addEventListener('click', (e) => {
   grid.lock()
