@@ -1,0 +1,2 @@
+:root{--grid-size:48px;--font-size:16px}body{align-items:center;display:flex;flex-direction:column;height:100vh;margin:0}table{border-collapse:collapse;margin:auto}td{border:1px solid #000;font-size:var(--font-size);height:var(--grid-size);text-align:center;width:var(--grid-size)}td.invalid{color:red}td.border-top{border-top:2px solid #000}td.border-bottom{border-bottom:2px solid #000}td.border-left{border-left:2px solid #000}td.border-right{border-right:2px solid #000}span{font-size:larger;margin:auto}button{margin:10px}
+/*# sourceMappingURL=index.cf7b15fb.css.map */
