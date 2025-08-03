@@ -10,7 +10,7 @@ export class Grid {
     const table = document.getElementById('sudoku-grid')
     table.innerHTML = ''
 
-    const regex = this.gridSize === 9 ? /^[1-9]?<br>$/ : /^([1-9]|1[0-6])?<br>$/
+    const regex = this.gridSize === 9 ? /^[1-9]?$/ : /^([1-9]|1[0-6])?$/
     for (let i = 0; i < this.gridSize; i++) {
       const row = table.insertRow()
       for (let j = 0; j < this.gridSize; j++) {
